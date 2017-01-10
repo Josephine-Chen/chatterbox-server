@@ -18,7 +18,6 @@ var messageData = require('./messageData.js');
 
 var requestHandler = function(request, response) {
 
-  //console.log('HELLOOOOOOOOOOOOOOO!!!!!!');
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -51,38 +50,38 @@ var requestHandler = function(request, response) {
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
   //console.log('before if statements');
-  if(request.url === '/classes/messages') {
+  if (request.url === '/classes/messages') {
     //console.log('classes/messages triggered');
     if (request.method === 'GET') {
 
-      fs.readFile('messages', 'utf8', function(err, data){
+      fs.readFile('messages', 'utf8', function(err, data) {
         if (err) {
           response.writeHead(404);
           response.end();
         }
+        console.log(data);
         data = data.substring(0, data.length - 5);
         var arrayData1 = data.split('SPLIT');
-        var arrayData = arrayData1.map(function(value){
+        var arrayData = arrayData1.map(function(value) {
           return JSON.parse(value);
         });
 
         response.writeHead(200, headers);
 
         var resultsObject = {results: arrayData};
-        console.log('RESULTS OBJECT IS', resultsObject)
+        //console.log('RESULTS OBJECT IS', resultsObject);
         var resultsString = JSON.stringify(resultsObject);
-        var reParsed = JSON.parse(resultsString);
-        console.log('REPARSED IN FUNCTION', reParsed);
+        // var reParsed = JSON.parse(resultsString);
+        // console.log('REPARSED IN FUNCTION', reParsed);
         //var resultsString2 = `"${resultsString}"`;
         //console.log('PARSED STRING', JSON.parse(resultsString));
         response.end(resultsString);
       });
-    }
-    else if (request.method === 'POST') {
-      request.on('data', function(text){
+    } else if (request.method === 'POST') {
+      request.on('data', function(text) {
         var parsed = JSON.parse(text);
         console.log('POST BEFORE APPENDING FILE');
-        fs.appendFile('messages', JSON.stringify(parsed) + 'SPLIT', 'utf8', function(err){
+        fs.appendFile('messages', JSON.stringify(parsed) + 'SPLIT', 'utf8', function(err) {
           if (err) {
             console.log('there was an error posting', err);
             response.writeHead(404);
@@ -95,6 +94,7 @@ var requestHandler = function(request, response) {
 
       request.on('end', function() {
         console.log('end of request');
+        response.writeHead(201, headers);
         response.end('{"success" : "Post succeeded", "status" : 201}');
       });
     }
@@ -114,7 +114,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end('Hello, World! End of file');
+  //response.end('Hello, World! End of file');
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).

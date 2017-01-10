@@ -24,7 +24,6 @@ describe('Node Server Request Listener Function', function() {
   });
 
   it('Should send back parsable stringified JSON', function() {
-    console.log('STRINGIFY JSON TEST');
     var req = new stubs.request('/classes/messages', 'GET');
     var res = new stubs.response();
     //console.log('WHAT GOT SENT BACK', res);
